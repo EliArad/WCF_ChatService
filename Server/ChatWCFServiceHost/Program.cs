@@ -59,8 +59,7 @@ namespace TestServiceHost
                 string ipAddress = "10.0.0.17";
                 const string MegaPopServerRegistry = "SOFTWARE\\Eli\\ChatServer";
                 clsRegistry reg = new clsRegistry();
-                if (ipAddress == string.Empty)
-                    ipAddress = reg.GetStringValue(Registry.LocalMachine, MegaPopServerRegistry, "LocalIpAddress");
+                ipAddress = reg.GetStringValue(Registry.LocalMachine, MegaPopServerRegistry, "LocalIpAddress");
 
                 // Create the url that is needed to specify
                 // where the service should be started

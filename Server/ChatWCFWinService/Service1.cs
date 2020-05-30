@@ -45,7 +45,7 @@ namespace ChatWCFWinService
          
         protected override void OnStart(string[] args)
         {
-            
+            OpenService();
         }
 
         void OpenService()
@@ -54,9 +54,8 @@ namespace ChatWCFWinService
             {
                 string ipAddress = "10.0.0.17";
                 const string MegaPopServerRegistry = "SOFTWARE\\Eli\\ChatServer";
-                clsRegistry reg = new clsRegistry();
-                if (ipAddress == string.Empty)
-                    ipAddress = reg.GetStringValue(Registry.LocalMachine, MegaPopServerRegistry, "LocalIpAddress");
+                clsRegistry reg = new clsRegistry();                
+                ipAddress = reg.GetStringValue(Registry.LocalMachine, MegaPopServerRegistry, "LocalIpAddress");
 
                  
 
