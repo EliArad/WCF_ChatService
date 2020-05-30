@@ -16,7 +16,6 @@ namespace ChatServiceLib
         [OperationContract]
         string GetVersion();
 
-
         [OperationContract]
         bool Connect(string userName, string freedesc, Guid serverGuid, DateTime time);
 
@@ -32,8 +31,8 @@ namespace ChatServiceLib
         [OperationContract()]
         bool BroadcastServer(Message msg);
 
-        [OperationContract(IsOneWay = true, IsTerminating = true)]
-        void Disconnect(Client userName);
+        [OperationContract(IsOneWay = true)]
+        void Disconnect(string userName, Guid ServerGuid);
 
 
     }

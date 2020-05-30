@@ -111,7 +111,7 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IChatService/BroadcastServer" message="tns:IChatService_BroadcastServer_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IChatService/BroadcastServerResponse" message="tns:IChatService_BroadcastServer_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="true" name="Disconnect">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Disconnect">
       <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Disconnect" message="tns:IChatService_Disconnect_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UserJoin">

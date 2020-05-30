@@ -16,7 +16,7 @@ namespace ChatServiceLib
         void UserJoin(Client client);
 
         [OperationContract(IsOneWay = true)]
-        void UserLeave(Client client);
+        void UserLeave(string userName, Guid serverGuid , DateTime time);
 
         [OperationContract(IsOneWay = true)]
         void RefreshClients(List<Client> clients);

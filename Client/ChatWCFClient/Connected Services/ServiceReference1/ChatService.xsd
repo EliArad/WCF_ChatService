@@ -83,7 +83,8 @@
   <xs:element name="Disconnect">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="userName" nillable="true" type="q6:Client" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="ServerGuid" type="q6:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -97,7 +98,9 @@
   <xs:element name="UserLeave">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="client" nillable="true" type="q8:Client" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="serverGuid" type="q8:guid" />
+        <xs:element minOccurs="0" name="time" type="xs:dateTime" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

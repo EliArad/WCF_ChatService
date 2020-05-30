@@ -102,22 +102,21 @@ namespace ChatServiceLib
             return false;
         }
 
-        public void Disconnect(Client client)
+        public void Disconnect(string userName, Guid ServerGuid)
         {
             //lock (m_connectLock)
             {
-                foreach (Client c in clients.Keys)
+                foreach (KeyValuePair<Client, IDuplexServiceCallback> p in clients)
                 {
-                    if (client.Name == c.Name && client.ServerGuid == c.ServerGuid)
-                    {
-
-                        this.clients.Remove(c);
-                        //this.clientList.Remove(c);
-                        foreach (IDuplexServiceCallback callback in clients.Values)
+                    if (userName == p.Key.Name && ServerGuid == p.Key.ServerGuid)
+                    {                       
+                        var t = new Thread(() =>
                         {
-                            //callback.RefreshClients(this.clientList);
-                            callback.UserLeave(client);
-                        }
+                            p.Value.UserLeave(userName, ServerGuid, DateTime.Now);
+                            this.clients.Remove(p.Key);
+                        });
+                        t.Start();                            
+                       
                     }
                 }
             }
@@ -167,7 +166,7 @@ namespace ChatServiceLib
                 catch (Exception err)
                 {
                     if (c != null)
-                        Disconnect(c);
+                        Disconnect(c.Name, c.ServerGuid);
                     Console.WriteLine(err.Message);
                     return false;
                 }
@@ -204,7 +203,7 @@ namespace ChatServiceLib
                 catch (Exception err)
                 {
                     if (c != null)
-                        Disconnect(c);
+                        Disconnect(c.Name, c.ServerGuid);
                     Console.WriteLine(err.Message);
                     return false;
                 }
@@ -253,7 +252,7 @@ namespace ChatServiceLib
                 catch (Exception err)
                 {
                     if (c != null)
-                        Disconnect(c);
+                        Disconnect(c.Name, c.ServerGuid);
                     Console.WriteLine(err.Message);
                     return false;
                 }
@@ -285,7 +284,7 @@ namespace ChatServiceLib
                 catch (Exception err)
                 {
                     if (c != null)
-                        Disconnect(c);
+                        Disconnect(c.Name, c.ServerGuid);
                     Console.WriteLine(err.Message);
                 }
             }

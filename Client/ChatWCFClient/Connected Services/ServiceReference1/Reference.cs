@@ -271,11 +271,11 @@ namespace ChatWCFClientApi.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/BroadcastServer", ReplyAction="http://tempuri.org/IChatService/BroadcastServerResponse")]
         System.Threading.Tasks.Task<bool> BroadcastServerAsync(ChatWCFClientApi.ServiceReference1.Message msg);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, IsTerminating=true, Action="http://tempuri.org/IChatService/Disconnect")]
-        void Disconnect(ChatWCFClientApi.ServiceReference1.Client userName);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/Disconnect")]
+        void Disconnect(string userName, System.Guid ServerGuid);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, IsTerminating=true, Action="http://tempuri.org/IChatService/Disconnect")]
-        System.Threading.Tasks.Task DisconnectAsync(ChatWCFClientApi.ServiceReference1.Client userName);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/Disconnect")]
+        System.Threading.Tasks.Task DisconnectAsync(string userName, System.Guid ServerGuid);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -285,7 +285,7 @@ namespace ChatWCFClientApi.ServiceReference1 {
         void UserJoin(ChatWCFClientApi.ServiceReference1.Client client);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/UserLeave")]
-        void UserLeave(ChatWCFClientApi.ServiceReference1.Client client);
+        void UserLeave(string userName, System.Guid serverGuid, System.DateTime time);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/RefreshClients")]
         void RefreshClients(ChatWCFClientApi.ServiceReference1.Client[] clients);
@@ -373,12 +373,12 @@ namespace ChatWCFClientApi.ServiceReference1 {
             return base.Channel.BroadcastServerAsync(msg);
         }
         
-        public void Disconnect(ChatWCFClientApi.ServiceReference1.Client userName) {
-            base.Channel.Disconnect(userName);
+        public void Disconnect(string userName, System.Guid ServerGuid) {
+            base.Channel.Disconnect(userName, ServerGuid);
         }
         
-        public System.Threading.Tasks.Task DisconnectAsync(ChatWCFClientApi.ServiceReference1.Client userName) {
-            return base.Channel.DisconnectAsync(userName);
+        public System.Threading.Tasks.Task DisconnectAsync(string userName, System.Guid ServerGuid) {
+            return base.Channel.DisconnectAsync(userName, ServerGuid);
         }
     }
 }
