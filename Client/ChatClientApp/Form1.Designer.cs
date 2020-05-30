@@ -30,6 +30,7 @@
         {
             this.btnConnect = new System.Windows.Forms.Button();
             this.txtUserName = new System.Windows.Forms.TextBox();
+            this.txtStatus = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnConnect
@@ -49,11 +50,20 @@
             this.txtUserName.Size = new System.Drawing.Size(100, 20);
             this.txtUserName.TabIndex = 1;
             // 
+            // txtStatus
+            // 
+            this.txtStatus.Location = new System.Drawing.Point(262, 32);
+            this.txtStatus.Multiline = true;
+            this.txtStatus.Name = "txtStatus";
+            this.txtStatus.Size = new System.Drawing.Size(354, 219);
+            this.txtStatus.TabIndex = 2;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.txtUserName);
             this.Controls.Add(this.btnConnect);
             this.Name = "Form1";
@@ -67,6 +77,7 @@
 
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.TextBox txtUserName;
+        private System.Windows.Forms.TextBox txtStatus;
     }
 }
 

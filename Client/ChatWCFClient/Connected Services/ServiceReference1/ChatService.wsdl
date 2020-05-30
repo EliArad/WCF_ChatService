@@ -48,14 +48,44 @@
   <wsdl:message name="IChatService_Connect_OutputMessage">
     <wsdl:part name="parameters" element="tns:ConnectResponse" />
   </wsdl:message>
+  <wsdl:message name="IChatService_Say_InputMessage">
+    <wsdl:part name="parameters" element="tns:Say" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_Say_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SayResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_Echo_InputMessage">
+    <wsdl:part name="parameters" element="tns:Echo" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_Broadcast_InputMessage">
+    <wsdl:part name="parameters" element="tns:Broadcast" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_Broadcast_OutputMessage">
+    <wsdl:part name="parameters" element="tns:BroadcastResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_BroadcastServer_InputMessage">
+    <wsdl:part name="parameters" element="tns:BroadcastServer" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_BroadcastServer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:BroadcastServerResponse" />
+  </wsdl:message>
   <wsdl:message name="IChatService_Disconnect_InputMessage">
     <wsdl:part name="parameters" element="tns:Disconnect" />
   </wsdl:message>
-  <wsdl:message name="IChatService_NotifyCallbackMessage_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:NotifyCallbackMessage" />
+  <wsdl:message name="IChatService_UserJoin_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UserJoin" />
   </wsdl:message>
-  <wsdl:message name="IChatService_NotifyDataCallback_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:NotifyDataCallback" />
+  <wsdl:message name="IChatService_UserLeave_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UserLeave" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_RefreshClients_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:RefreshClients" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_ReceiveBroadcast_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ReceiveBroadcast" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_Receive_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:Receive" />
   </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="IChatService">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetVersion">
@@ -66,14 +96,38 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Connect" message="tns:IChatService_Connect_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IChatService/ConnectResponse" message="tns:IChatService_Connect_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Say">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Say" message="tns:IChatService_Say_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/SayResponse" message="tns:IChatService_Say_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Echo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Echo" message="tns:IChatService_Echo_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Broadcast">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Broadcast" message="tns:IChatService_Broadcast_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/BroadcastResponse" message="tns:IChatService_Broadcast_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="BroadcastServer">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChatService/BroadcastServer" message="tns:IChatService_BroadcastServer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/BroadcastServerResponse" message="tns:IChatService_BroadcastServer_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="true" name="Disconnect">
       <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Disconnect" message="tns:IChatService_Disconnect_InputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="NotifyCallbackMessage">
-      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/NotifyCallbackMessage" message="tns:IChatService_NotifyCallbackMessage_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UserJoin">
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/UserJoin" message="tns:IChatService_UserJoin_OutputCallbackMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="NotifyDataCallback">
-      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/NotifyDataCallback" message="tns:IChatService_NotifyDataCallback_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UserLeave">
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/UserLeave" message="tns:IChatService_UserLeave_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="RefreshClients">
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/RefreshClients" message="tns:IChatService_RefreshClients_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ReceiveBroadcast">
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/ReceiveBroadcast" message="tns:IChatService_ReceiveBroadcast_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Receive">
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/Receive" message="tns:IChatService_Receive_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IChatService" type="tns:IChatService">
@@ -97,20 +151,71 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="Say">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/Say" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Echo">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/Echo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="Broadcast">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/Broadcast" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BroadcastServer">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/BroadcastServer" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="Disconnect">
       <soap12:operation soapAction="http://tempuri.org/IChatService/Disconnect" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
-    <wsdl:operation name="NotifyCallbackMessage">
-      <soap12:operation soapAction="http://tempuri.org/IChatService/NotifyCallbackMessage" style="document" />
+    <wsdl:operation name="UserJoin">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/UserJoin" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="NotifyDataCallback">
-      <soap12:operation soapAction="http://tempuri.org/IChatService/NotifyDataCallback" style="document" />
+    <wsdl:operation name="UserLeave">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/UserLeave" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RefreshClients">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/RefreshClients" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ReceiveBroadcast">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/ReceiveBroadcast" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Receive">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/Receive" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

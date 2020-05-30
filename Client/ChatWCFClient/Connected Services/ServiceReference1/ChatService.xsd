@@ -31,35 +31,94 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="Say">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q2:Message" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SayResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SayResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Echo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q3:Message" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Broadcast">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q4:Message" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BroadcastResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="BroadcastResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BroadcastServer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q5:Message" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BroadcastServerResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="BroadcastServerResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="Disconnect">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="userName" nillable="true" type="q2:Client" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="userName" nillable="true" type="q6:Client" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="NotifyCallbackMessage">
+  <xs:element name="UserJoin">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="fieldGuid" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="ipAddress" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="portNumber" type="xs:int" />
-        <xs:element minOccurs="0" name="code" type="xs:int" />
-        <xs:element minOccurs="0" name="Msg" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="client" nillable="true" type="q7:Client" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="NotifyDataCallback">
+  <xs:element name="UserLeave">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="fieldGuid" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="ipAddress" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="portNumber" type="xs:int" />
-        <xs:element minOccurs="0" name="code" type="xs:int" />
-        <xs:element minOccurs="0" name="buf" nillable="true" type="xs:base64Binary" />
-        <xs:element minOccurs="0" name="size" type="xs:int" />
-        <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="client" nillable="true" type="q8:Client" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RefreshClients">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="clients" nillable="true" type="q9:ArrayOfClient" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ReceiveBroadcast">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q10:Message" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Receive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q11:Message" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

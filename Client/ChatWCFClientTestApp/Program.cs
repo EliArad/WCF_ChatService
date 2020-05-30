@@ -37,8 +37,7 @@ namespace ChatWCFClientTestApp
                     }
                 }
                 p.Connect("user1", "freedesc", new Guid(), DateTime.Now);
-                p.msgEvent += MsgCallback;
-                p.dataEvent += DataCallback;
+               
                  
                 Console.WriteLine("Opened");
                 Console.ReadKey();

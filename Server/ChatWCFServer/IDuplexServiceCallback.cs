@@ -8,13 +8,24 @@ using System.Threading.Tasks;
 namespace ChatServiceLib
 {
 
-  [ServiceContract]
-  public interface IDuplexServiceCallback {
+    [ServiceContract]
+    public interface IDuplexServiceCallback
+    {
 
-    [OperationContract(IsOneWay = true)]
-      void NotifyCallbackMessage(string fieldGuid, string ipAddress, int portNumber, int code, string Msg , DateTime date);
+        [OperationContract(IsOneWay = true)]
+        void UserJoin(Client client);
 
-    [OperationContract(IsOneWay = true)]
-    void NotifyDataCallback(string fieldGuid, string ipAddress, int portNumber, int code, byte[] buf, int size, DateTime date);
-  }
+        [OperationContract(IsOneWay = true)]
+        void UserLeave(Client client);
+
+        [OperationContract(IsOneWay = true)]
+        void RefreshClients(List<Client> clients);
+
+        [OperationContract(IsOneWay = true)]
+        void ReceiveBroadcast(Message msg);
+
+        [OperationContract(IsOneWay = true)]
+        void Receive(Message msg);
+
+    }
 }

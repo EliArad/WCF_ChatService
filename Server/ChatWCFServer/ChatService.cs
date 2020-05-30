@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
- 
-
+using System.Threading;
 
 namespace ChatServiceLib
 {
-    
-    
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+
+
+    //[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single,
+    ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class ChatService : IChatService 
     {
          
@@ -27,9 +29,7 @@ namespace ChatServiceLib
         public bool Connect(string userName, string freedesc, Guid serverGuid, DateTime time)
         {
             IDuplexServiceCallback Callback = OperationContext.Current.GetCallbackChannel<IDuplexServiceCallback>();
-
-            Console.WriteLine("Registration: " + userName);
-
+             
             Client client = new Client
             {
                 FreeDesc = freedesc,
@@ -37,17 +37,10 @@ namespace ChatServiceLib
                 ServerGuid = serverGuid,
                 Time = time 
             };
-
-            /*
-            if (listCallback.ContainsKey(baseFieldGuid) == false)
-                listCallback.Add(baseFieldGuid, Callback);
-            else
-                listCallback[baseFieldGuid] = Callback;
-            */
-
+ 
             if (!clients.ContainsValue(Callback))
              {
-                if (clients.ContainsKey(client) == false)
+                if (IsClientConnected(client) == false)
                 {
                     List<Client> toRemove = new List<Client>();
                     foreach (KeyValuePair<Client, IDuplexServiceCallback> p in clients)
@@ -69,6 +62,7 @@ namespace ChatServiceLib
                 else
                 {
                     clients[client] = Callback;
+                    return true;
                 }
 
                 foreach (Client key in clients.Keys)
@@ -77,7 +71,11 @@ namespace ChatServiceLib
                     try
                     {
                         //callback.RefreshClients(clientList);
-                        //callback.UserJoin(client);
+                        var t = new Thread(()=>
+                        {
+                            callback.UserJoin(client);
+                        });
+                        t.Start();
                     }
                     catch
                     {
@@ -90,9 +88,20 @@ namespace ChatServiceLib
             else
             {
                 return false;
-            }
- 
+            } 
         }
+        bool IsClientConnected(Client client)
+        {
+            foreach (KeyValuePair<Client, IDuplexServiceCallback> p in clients)
+            {
+                if (p.Key.Name == client.Name && p.Key.ServerGuid == client.ServerGuid)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void Disconnect(Client client)
         {
             //lock (m_connectLock)
@@ -107,7 +116,7 @@ namespace ChatServiceLib
                         foreach (IDuplexServiceCallback callback in clients.Values)
                         {
                             //callback.RefreshClients(this.clientList);
-                            //callback.UserLeave(client);
+                            callback.UserLeave(client);
                         }
                     }
                 }
@@ -117,6 +126,170 @@ namespace ChatServiceLib
         {
             return "1";
         }
-         
+        IDuplexServiceCallback GetClient(string toReceiverName, Guid ToReceiverServerGuid, out Client c)
+        {
+            foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
+            {
+                if (client.Key.Name != toReceiverName || client.Key.ServerGuid != ToReceiverServerGuid)
+                    continue;
+                c = client.Key;
+                return client.Value;
+            }
+            c = null;
+            return null;
+        }
+
+        public bool Broadcast(Message msg)
+        {
+            //lock (m_connectLock)
+            {
+                Client c = null;
+                try
+                {
+                    Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
+                    bool found = false;
+                    foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
+                    {
+                        if (client.Key.Name == msg.SenderName && client.Key.ServerGuid == msg.FromServerGuid)
+                            continue;
+
+                        c = client.Key;
+                        var t = new Thread(() =>
+                        {
+                            client.Value.ReceiveBroadcast(msg);                           
+                        });
+                        t.Start();
+
+                        found = true;
+                    }
+                    return found;
+                }
+                catch (Exception err)
+                {
+                    if (c != null)
+                        Disconnect(c);
+                    Console.WriteLine(err.Message);
+                    return false;
+                }
+            }
+        }
+
+        public bool BroadcastServer(Message msg)
+        {
+            //lock (m_connectLock)
+            {
+                Client c = null;
+                try
+                {
+                    bool found = false;
+                    Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
+                    foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
+                    {
+                        if (client.Key.Name == msg.SenderName && client.Key.ServerGuid == msg.FromServerGuid)
+                            continue;
+
+                        if (client.Key.ServerGuid == msg.ToReceiverServerGuid)
+                        {
+                            c = client.Key;
+                            var t = new Thread(() =>
+                            {
+                                client.Value.ReceiveBroadcast(msg);
+                            });
+                            t.Start();
+                            found = true;
+                        }
+                    }
+                    return found;
+                }
+                catch (Exception err)
+                {
+                    if (c != null)
+                        Disconnect(c);
+                    Console.WriteLine(err.Message);
+                    return false;
+                }
+            }
+        }
+
+        public bool Say(Message msg)
+        {
+            //lock (m_connectLock)
+            {
+                Client c = null;
+                try
+                {
+                    Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
+                    bool found = false;
+                    foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
+                    {
+                        if (client.Key.Name == msg.toReceiverName && client.Key.ServerGuid == msg.ToReceiverServerGuid)
+                            continue;
+
+                        if (client.Key.Name == msg.SenderName && client.Key.ServerGuid == msg.FromServerGuid)
+                        {
+                            IDuplexServiceCallback p = GetClient(msg.toReceiverName, msg.ToReceiverServerGuid, out c);
+                            if (p != null)
+                            {
+                                var t = new Thread(() =>
+                                {
+                                    p.Receive(msg);
+                                });
+                                t.Start();
+                                
+                                found = true;
+                            }
+                        }
+                    }
+                    if (found == false)
+                    {
+                        IDuplexServiceCallback p = GetClient(msg.SenderName, msg.FromServerGuid, out c);
+                        if (p != null)
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                catch (Exception err)
+                {
+                    if (c != null)
+                        Disconnect(c);
+                    Console.WriteLine(err.Message);
+                    return false;
+                }
+            }
+        }
+        public void Echo(Message msg)
+        {
+            //lock (m_connectLock)
+            {
+                Client c = null;
+                try
+                {
+                    Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
+
+                    foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
+                    {
+                        if (client.Key.Name == msg.toReceiverName && client.Key.ServerGuid == msg.ToReceiverServerGuid)
+                        {
+                            c = client.Key;
+                            var t = new Thread(() =>
+                            {
+                                client.Value.Receive(msg);
+                            });
+                            t.Start();
+                            break;
+                        }
+                    }
+                }
+                catch (Exception err)
+                {
+                    if (c != null)
+                        Disconnect(c);
+                    Console.WriteLine(err.Message);
+                }
+            }
+        }
+
     }
 }

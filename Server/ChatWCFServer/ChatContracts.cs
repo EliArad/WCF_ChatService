@@ -10,12 +10,67 @@
 namespace ChatServiceLib
 {
     using System;
- 
+    using System.Runtime.Serialization;
+
     public class Client
     {
         public string Name;
         public DateTime Time;
         public string FreeDesc;
         public Guid ServerGuid;
+    }
+
+    [DataContract]
+    public class Message
+    {
+        private string _senderName;
+        private string _toReceiverName;
+        private string _content;
+        private DateTime _time;
+        private Guid _fromServerGuid;
+        private Guid _toReceiverServerGuid;
+
+
+
+        [DataMember]
+        public string SenderName
+        {
+            get { return _senderName; }
+            set { _senderName = value; }
+        }
+
+        [DataMember]
+        public string toReceiverName
+        {
+            get { return _toReceiverName; }
+            set { _toReceiverName = value; }
+        }
+
+        [DataMember]
+        public string Content
+        {
+            get { return _content; }
+            set { _content = value; }
+        }
+        [DataMember]
+        public DateTime Time
+        {
+            get { return _time; }
+            set { _time = value; }
+        }
+
+        [DataMember]
+        public Guid FromServerGuid
+        {
+            get { return _fromServerGuid; }
+            set { _fromServerGuid = value; }
+        }
+
+        [DataMember]
+        public Guid ToReceiverServerGuid
+        {
+            get { return _toReceiverServerGuid; }
+            set { _toReceiverServerGuid = value; }
+        }
     }
 }
