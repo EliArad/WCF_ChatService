@@ -7,8 +7,8 @@
     <ProjectGuid>{5131FBA0-6C7B-430C-AF68-56A730D429DA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PhidgetWCFServiceHost</RootNamespace>
-    <AssemblyName>PhidgetWCFServiceHost</AssemblyName>
+    <RootNamespace>ChatWCFServiceHost</RootNamespace>
+    <AssemblyName>ChatWCFServiceHost</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

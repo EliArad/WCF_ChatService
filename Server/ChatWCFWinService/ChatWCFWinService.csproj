@@ -7,8 +7,8 @@
     <ProjectGuid>{0B0D2D92-6401-48A0-B240-1B6C4389D7DD}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PhidgetWCFWinService</RootNamespace>
-    <AssemblyName>PhidgetWCFWinService</AssemblyName>
+    <RootNamespace>ChatWCFWinService</RootNamespace>
+    <AssemblyName>ChatWCFWinService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
