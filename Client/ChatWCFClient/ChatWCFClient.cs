@@ -44,12 +44,14 @@ namespace ChatWCFClientApi
             try
             {
 
+              
                 m_ipAddress = ipAddress;
                 NetTcpBinding tcpBinding = new NetTcpBinding();
                 tcpBinding.OpenTimeout = TimeSpan.FromSeconds(5);
                 tcpBinding.ReceiveTimeout = TimeSpan.FromSeconds(5);
                 tcpBinding.SendTimeout = TimeSpan.FromSeconds(5);
                 tcpBinding.CloseTimeout = TimeSpan.FromSeconds(5);
+                tcpBinding.MaxConnections = 2000;
 
                 tcpBinding.TransactionFlow = false;
                 //tcpBinding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
@@ -57,14 +59,14 @@ namespace ChatWCFClientApi
                 //tcpBinding.Security.Mode = SecurityMode.Transport;
 
                 pipeFactory =
-                 new DuplexChannelFactory<IChatService>(
-                     new InstanceContext(callback),
+                    new DuplexChannelFactory<IChatService>(
+                        new InstanceContext(callback),
                     tcpBinding,
-                     new EndpointAddress("net.tcp://" + ipAddress + ":8099/ChatService"));
+                        new EndpointAddress("net.tcp://" + ipAddress + ":8099/ChatService"));
 
 
                 m_client = pipeFactory.CreateChannel();
-
+               
             }
             catch (Exception err)
             {
@@ -76,12 +78,12 @@ namespace ChatWCFClientApi
         public bool Leave(out string outMessage)
         {
             outMessage = string.Empty;
-            if (m_client != null)
+            if (m_client != null && m_IsConnected == true)
             {
                 try
-                {                     
-                  m_client.Disconnect(m_userName, m_serverGuid);
-                  return true;
+                {
+                    m_client.Disconnect(m_userName, m_serverGuid, true);
+                    return true;
                 }
                 catch (Exception err)
                 {
@@ -94,18 +96,18 @@ namespace ChatWCFClientApi
                 outMessage = "Not initialized";
                 return false;
             }
-            
+
         }
 
         public bool SendMessage(string toUserName, Guid toServerName, string message, out string outMessage)
         {
             outMessage = string.Empty;
-            if (m_client != null)
+            if (m_client != null && m_IsConnected == true)
             {
                 try
                 {
-                    m_client.SendMessage(m_userName, m_serverGuid, toUserName, toServerName, message);
-                    return true;
+                    bool b = m_client.SendMessage(m_userName, m_serverGuid, toUserName, toServerName, message);
+                    return b;
                 }
                 catch (Exception err)
                 {
@@ -130,9 +132,9 @@ namespace ChatWCFClientApi
                     m_userName = userName;
                     m_freedesc = freedesc;
                     m_serverGuid = serverGuid;
-                    m_client.Connect(userName, freedesc, serverGuid, time);
+                    Task<bool> b = m_client.ConnectAsync(userName, freedesc, serverGuid, time);
                     m_IsConnected = true;
-                    return true;
+                    return b.Result;
                 }
                 catch (Exception err)
                 {
@@ -145,13 +147,13 @@ namespace ChatWCFClientApi
                 outMessage = "Not initialized";
                 return false;
             }
-            
+
         }
-          
          
+
         public string GetVersion()
         {
-            if (m_client != null)
+            if (m_client != null && m_IsConnected == true)
             {
                 return m_client.GetVersion();
             }
@@ -160,8 +162,47 @@ namespace ChatWCFClientApi
                 throw (new SystemException("Not initialized"));
             }
         }
-          
-        
+
+
+        public bool Broadcast(string msg, out string outMessage)
+        {
+
+            outMessage = string.Empty;
+            if (m_client != null && m_IsConnected == true)
+            {
+                try
+                {
+                    bool b = m_client.Broadcast(m_userName, m_serverGuid, msg);
+                    return b;
+                }
+                catch (Exception err)
+                {
+                    outMessage = err.Message;
+                    return false;
+                }
+            }
+            else
+            {
+                outMessage = "Not initialized";
+                return false; 
+            }
+        }
+        public bool Close(out string outMessage)
+        {
+            outMessage = string.Empty;
+            try
+            {
+                m_client.Disconnect(m_userName, m_serverGuid,false);
+                CloseClient();
+                return true;
+            }
+            catch (Exception err)
+            {
+                outMessage = err.Message;
+                return false;
+            }
+        }
+
         public void CloseClient()
         {
             try

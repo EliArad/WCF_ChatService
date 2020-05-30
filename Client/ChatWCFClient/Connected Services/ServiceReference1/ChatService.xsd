@@ -35,9 +35,9 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="fromUserName" nillable="true" type="xs:string" />
-        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fromServerName" type="q2:guid" />
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fromServerGuid" type="q2:guid" />
         <xs:element minOccurs="0" name="toUserName" nillable="true" type="xs:string" />
-        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="toServerName" type="q3:guid" />
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="toServerGuid" type="q3:guid" />
         <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
@@ -49,17 +49,12 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="Echo">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q4:Message" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="Broadcast">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q5:Message" />
+        <xs:element minOccurs="0" name="fromUserName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fromServerGuid" type="q4:guid" />
+        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -73,7 +68,10 @@
   <xs:element name="BroadcastServer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q6:Message" />
+        <xs:element minOccurs="0" name="fromUserName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fromServerGuid" type="q5:guid" />
+        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="toServerGuid" type="q6:guid" />
+        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -89,6 +87,7 @@
       <xs:sequence>
         <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
         <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="ServerGuid" type="q7:guid" />
+        <xs:element minOccurs="0" name="notify" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -119,7 +118,13 @@
   <xs:element name="ReceiveBroadcast">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="msg" nillable="true" type="q11:Message" />
+        <xs:element minOccurs="0" name="toUserName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="toServerGuid" type="q11:guid" />
+        <xs:element minOccurs="0" name="fromUserName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fromServerGuid" type="q12:guid" />
+        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="broadcast" type="xs:boolean" />
+        <xs:element minOccurs="0" name="date" type="xs:dateTime" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -127,9 +132,9 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="fromUserName" nillable="true" type="xs:string" />
-        <xs:element xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fromServerName" type="q12:guid" />
+        <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fromServerName" type="q13:guid" />
         <xs:element minOccurs="0" name="toUserName" nillable="true" type="xs:string" />
-        <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="toServerName" type="q13:guid" />
+        <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="toServerName" type="q14:guid" />
         <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="date" type="xs:dateTime" />
       </xs:sequence>

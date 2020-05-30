@@ -22,7 +22,7 @@ namespace ChatServiceLib
         void RefreshClients(List<Client> clients);
 
         [OperationContract(IsOneWay = true)]
-        void ReceiveBroadcast(Message msg);
+        void ReceiveBroadcast(string toUserName, Guid toServerGuid, string fromUserName, Guid fromServerGuid, string message, bool broadcast, DateTime date);
 
         [OperationContract(IsOneWay = true)]
         void NotifyMessage(string fromUserName, Guid fromServerName, string toUserName, Guid toServerName, string message, DateTime date);

@@ -20,21 +20,17 @@ namespace ChatServiceLib
         bool Connect(string userName, string freedesc, Guid serverGuid, DateTime time);
 
         [OperationContract()]
-        bool SendMessage(string fromUserName, Guid fromServerName, string toUserName, Guid toServerName, string message);
-
-        [OperationContract(IsOneWay = true)]
-        void Echo(Message msg);
+        bool SendMessage(string fromUserName, Guid fromServerGuid, string toUserName, Guid toServerGuid, string message);
+          
+        [OperationContract()]
+        bool Broadcast(string fromUserName, Guid fromServerGuid, string message);
 
         [OperationContract()]
-        bool Broadcast(Message msg);
-
-        [OperationContract()]
-        bool BroadcastServer(Message msg);
+        bool BroadcastServer(string fromUserName, Guid fromServerGuid, Guid toServerGuid, string message);
 
         [OperationContract(IsOneWay = true)]
-        void Disconnect(string userName, Guid ServerGuid);
-
-
+        void Disconnect(string userName, Guid ServerGuid, bool notify);
+         
     }
 
 }

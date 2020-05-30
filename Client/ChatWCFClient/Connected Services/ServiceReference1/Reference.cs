@@ -15,35 +15,6 @@ namespace ChatWCFClientApi.ServiceReference1 {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Message", Namespace="http://schemas.datacontract.org/2004/07/ChatServiceLib")]
-    [System.SerializableAttribute()]
-    public partial class Message : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Client", Namespace="http://schemas.datacontract.org/2004/07/ChatServiceLib")]
     [System.SerializableAttribute()]
     public partial class Client : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -152,34 +123,28 @@ namespace ChatWCFClientApi.ServiceReference1 {
         System.Threading.Tasks.Task<bool> ConnectAsync(string userName, string freedesc, System.Guid serverGuid, System.DateTime time);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/SendMessage", ReplyAction="http://tempuri.org/IChatService/SendMessageResponse")]
-        bool SendMessage(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message);
+        bool SendMessage(string fromUserName, System.Guid fromServerGuid, string toUserName, System.Guid toServerGuid, string message);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/SendMessage", ReplyAction="http://tempuri.org/IChatService/SendMessageResponse")]
-        System.Threading.Tasks.Task<bool> SendMessageAsync(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message);
-        
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/Echo")]
-        void Echo(ChatWCFClientApi.ServiceReference1.Message msg);
-        
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/Echo")]
-        System.Threading.Tasks.Task EchoAsync(ChatWCFClientApi.ServiceReference1.Message msg);
+        System.Threading.Tasks.Task<bool> SendMessageAsync(string fromUserName, System.Guid fromServerGuid, string toUserName, System.Guid toServerGuid, string message);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/Broadcast", ReplyAction="http://tempuri.org/IChatService/BroadcastResponse")]
-        bool Broadcast(ChatWCFClientApi.ServiceReference1.Message msg);
+        bool Broadcast(string fromUserName, System.Guid fromServerGuid, string message);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/Broadcast", ReplyAction="http://tempuri.org/IChatService/BroadcastResponse")]
-        System.Threading.Tasks.Task<bool> BroadcastAsync(ChatWCFClientApi.ServiceReference1.Message msg);
+        System.Threading.Tasks.Task<bool> BroadcastAsync(string fromUserName, System.Guid fromServerGuid, string message);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/BroadcastServer", ReplyAction="http://tempuri.org/IChatService/BroadcastServerResponse")]
-        bool BroadcastServer(ChatWCFClientApi.ServiceReference1.Message msg);
+        bool BroadcastServer(string fromUserName, System.Guid fromServerGuid, System.Guid toServerGuid, string message);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/BroadcastServer", ReplyAction="http://tempuri.org/IChatService/BroadcastServerResponse")]
-        System.Threading.Tasks.Task<bool> BroadcastServerAsync(ChatWCFClientApi.ServiceReference1.Message msg);
+        System.Threading.Tasks.Task<bool> BroadcastServerAsync(string fromUserName, System.Guid fromServerGuid, System.Guid toServerGuid, string message);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/Disconnect")]
-        void Disconnect(string userName, System.Guid ServerGuid);
+        void Disconnect(string userName, System.Guid ServerGuid, bool notify);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/Disconnect")]
-        System.Threading.Tasks.Task DisconnectAsync(string userName, System.Guid ServerGuid);
+        System.Threading.Tasks.Task DisconnectAsync(string userName, System.Guid ServerGuid, bool notify);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -195,7 +160,7 @@ namespace ChatWCFClientApi.ServiceReference1 {
         void RefreshClients(ChatWCFClientApi.ServiceReference1.Client[] clients);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/ReceiveBroadcast")]
-        void ReceiveBroadcast(ChatWCFClientApi.ServiceReference1.Message msg);
+        void ReceiveBroadcast(string toUserName, System.Guid toServerGuid, string fromUserName, System.Guid fromServerGuid, string message, bool broadcast, System.DateTime date);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/NotifyMessage")]
         void NotifyMessage(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message, System.DateTime date);
@@ -248,44 +213,36 @@ namespace ChatWCFClientApi.ServiceReference1 {
             return base.Channel.ConnectAsync(userName, freedesc, serverGuid, time);
         }
         
-        public bool SendMessage(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message) {
-            return base.Channel.SendMessage(fromUserName, fromServerName, toUserName, toServerName, message);
+        public bool SendMessage(string fromUserName, System.Guid fromServerGuid, string toUserName, System.Guid toServerGuid, string message) {
+            return base.Channel.SendMessage(fromUserName, fromServerGuid, toUserName, toServerGuid, message);
         }
         
-        public System.Threading.Tasks.Task<bool> SendMessageAsync(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message) {
-            return base.Channel.SendMessageAsync(fromUserName, fromServerName, toUserName, toServerName, message);
+        public System.Threading.Tasks.Task<bool> SendMessageAsync(string fromUserName, System.Guid fromServerGuid, string toUserName, System.Guid toServerGuid, string message) {
+            return base.Channel.SendMessageAsync(fromUserName, fromServerGuid, toUserName, toServerGuid, message);
         }
         
-        public void Echo(ChatWCFClientApi.ServiceReference1.Message msg) {
-            base.Channel.Echo(msg);
+        public bool Broadcast(string fromUserName, System.Guid fromServerGuid, string message) {
+            return base.Channel.Broadcast(fromUserName, fromServerGuid, message);
         }
         
-        public System.Threading.Tasks.Task EchoAsync(ChatWCFClientApi.ServiceReference1.Message msg) {
-            return base.Channel.EchoAsync(msg);
+        public System.Threading.Tasks.Task<bool> BroadcastAsync(string fromUserName, System.Guid fromServerGuid, string message) {
+            return base.Channel.BroadcastAsync(fromUserName, fromServerGuid, message);
         }
         
-        public bool Broadcast(ChatWCFClientApi.ServiceReference1.Message msg) {
-            return base.Channel.Broadcast(msg);
+        public bool BroadcastServer(string fromUserName, System.Guid fromServerGuid, System.Guid toServerGuid, string message) {
+            return base.Channel.BroadcastServer(fromUserName, fromServerGuid, toServerGuid, message);
         }
         
-        public System.Threading.Tasks.Task<bool> BroadcastAsync(ChatWCFClientApi.ServiceReference1.Message msg) {
-            return base.Channel.BroadcastAsync(msg);
+        public System.Threading.Tasks.Task<bool> BroadcastServerAsync(string fromUserName, System.Guid fromServerGuid, System.Guid toServerGuid, string message) {
+            return base.Channel.BroadcastServerAsync(fromUserName, fromServerGuid, toServerGuid, message);
         }
         
-        public bool BroadcastServer(ChatWCFClientApi.ServiceReference1.Message msg) {
-            return base.Channel.BroadcastServer(msg);
+        public void Disconnect(string userName, System.Guid ServerGuid, bool notify) {
+            base.Channel.Disconnect(userName, ServerGuid, notify);
         }
         
-        public System.Threading.Tasks.Task<bool> BroadcastServerAsync(ChatWCFClientApi.ServiceReference1.Message msg) {
-            return base.Channel.BroadcastServerAsync(msg);
-        }
-        
-        public void Disconnect(string userName, System.Guid ServerGuid) {
-            base.Channel.Disconnect(userName, ServerGuid);
-        }
-        
-        public System.Threading.Tasks.Task DisconnectAsync(string userName, System.Guid ServerGuid) {
-            return base.Channel.DisconnectAsync(userName, ServerGuid);
+        public System.Threading.Tasks.Task DisconnectAsync(string userName, System.Guid ServerGuid, bool notify) {
+            return base.Channel.DisconnectAsync(userName, ServerGuid, notify);
         }
     }
 }

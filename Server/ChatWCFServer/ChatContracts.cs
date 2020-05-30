@@ -20,14 +20,4 @@ namespace ChatServiceLib
         public Guid ServerGuid;
     }
 
-    [DataContract]
-    public class Message
-    {
-        public string fromUser;
-        public string toUser;
-        public string message;
-        public DateTime _time;
-        public Guid  fromServer;
-        public Guid toServer;
-    }
 }

@@ -8,7 +8,10 @@ using System.IO;
 using ChatServiceLib; 
 using System.ServiceModel.Description;
 using System.Net;
-using System.Diagnostics; 
+using System.Diagnostics;
+using RegistryClassApi;
+using Microsoft.Win32;
+using System.Threading;
 
 
 //http://www.c-sharpcorner.com/UploadFile/12b2b4/wcf-example-in-C-Sharp/
@@ -46,8 +49,18 @@ namespace TestServiceHost
         static void Main()
         {
             try
-            {                 
+            {
+
+                var t = new Thread(() =>
+                {
+
+                
+
                 string ipAddress = "10.0.0.17";
+                const string MegaPopServerRegistry = "SOFTWARE\\Eli\\ChatServer";
+                clsRegistry reg = new clsRegistry();
+                if (ipAddress == string.Empty)
+                    ipAddress = reg.GetStringValue(Registry.LocalMachine, MegaPopServerRegistry, "LocalIpAddress");
 
                 // Create the url that is needed to specify
                 // where the service should be started
@@ -92,10 +105,14 @@ namespace TestServiceHost
                 }
 
                 host.Open();
+                });
+                t.IsBackground = true;
+                t.Start();
                 Console.WriteLine("Chat WCF Host service strated @" + DateTime.Now.ToString());
                 Console.ReadLine();
                 host.Close();
                 System.Threading.Thread.Sleep(1000);
+
             }
             catch (Exception err)
             {
