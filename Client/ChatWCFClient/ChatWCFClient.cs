@@ -23,6 +23,21 @@ namespace ChatWCFClientApi
         string m_freedesc;
         Guid m_serverGuid;
 
+        public string UserName
+        {
+            get
+            {
+                return m_userName;
+            }
+        }
+
+        public Guid ServerGuid
+        {
+            get
+            {
+                return m_serverGuid;
+            }
+        }
 
         public ChatWCFClient(string ipAddress, IChatServiceCallback callback)
         {
@@ -80,6 +95,30 @@ namespace ChatWCFClientApi
                 return false;
             }
             
+        }
+
+        public bool SendMessage(string toUserName, Guid toServerName, string message, out string outMessage)
+        {
+            outMessage = string.Empty;
+            if (m_client != null)
+            {
+                try
+                {
+                    m_client.SendMessage(m_userName, m_serverGuid, toUserName, toServerName, message);
+                    return true;
+                }
+                catch (Exception err)
+                {
+                    outMessage = err.Message;
+                    return false;
+                }
+            }
+            else
+            {
+                outMessage = "Not initialized";
+                return false;
+            }
+
         }
         public bool Connect(string userName, string freedesc, Guid serverGuid, DateTime time, out string outMessage)
         {

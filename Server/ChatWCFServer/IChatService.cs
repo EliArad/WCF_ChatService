@@ -20,7 +20,7 @@ namespace ChatServiceLib
         bool Connect(string userName, string freedesc, Guid serverGuid, DateTime time);
 
         [OperationContract()]
-        bool Say(Message msg);
+        bool SendMessage(string fromUserName, Guid fromServerName, string toUserName, Guid toServerName, string message);
 
         [OperationContract(IsOneWay = true)]
         void Echo(Message msg);

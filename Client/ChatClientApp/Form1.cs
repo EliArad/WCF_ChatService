@@ -40,9 +40,15 @@ namespace ChatClientApp
             }
         }
 
-        public void UserJoin(Client client)
+        public void UserJoin(Client client, bool newUser)
         {
-            txtStatus.AppendText("User: " + client.Name + " has joined" + Environment.NewLine);
+            if (newUser == true)
+                txtStatus.AppendText("User: " + client.Name + " has joined" + Environment.NewLine);
+            else
+            {
+                txtStatus.AppendText("User: " + client.Name + " already joined" + Environment.NewLine);
+
+            }
         }
  
         public void RefreshClients(Client[] clients)
@@ -51,11 +57,6 @@ namespace ChatClientApp
         }
 
         public void ReceiveBroadcast(ChatWCFClientApi.ServiceReference1.Message msg)
-        {
-
-        }
-
-        public void Receive(ChatWCFClientApi.ServiceReference1.Message msg)
         {
 
         }
@@ -102,6 +103,34 @@ namespace ChatClientApp
         private void button3_Click(object sender, EventArgs e)
         {
             m_client[2].Leave(out string outMessage);
+        }
+
+        public void NotifyMessage(string fromUserName, Guid fromServerName, string toUserName, Guid toServerName, string message, DateTime date)
+        {
+            txtStatus.AppendText("Message arrived from: " + fromUserName + " to: " + toUserName + " :" + message + Environment.NewLine);
+        }
+
+        public void NotifyMessageSent(DateTime date, bool sent)
+        {
+
+        }
+
+        private void btnSendMessage_Click(object sender, EventArgs e)
+        {
+            if (cmbFromUserName.SelectedIndex == -1)
+                return;
+            if (cmbToUserName.SelectedIndex == -1)
+                return;
+
+
+            bool b = m_client[cmbFromUserName.SelectedIndex].SendMessage(m_client[cmbToUserName.SelectedIndex].UserName,                                        
+                                                                         m_client[cmbToUserName.SelectedIndex].ServerGuid,
+                                                                         txtMessageToSend.Text,
+                                                                         out string outMessage);
+            if (b == false)
+            {
+
+            }
         }
     }
 }

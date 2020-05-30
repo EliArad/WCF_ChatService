@@ -48,11 +48,11 @@
   <wsdl:message name="IChatService_Connect_OutputMessage">
     <wsdl:part name="parameters" element="tns:ConnectResponse" />
   </wsdl:message>
-  <wsdl:message name="IChatService_Say_InputMessage">
-    <wsdl:part name="parameters" element="tns:Say" />
+  <wsdl:message name="IChatService_SendMessage_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendMessage" />
   </wsdl:message>
-  <wsdl:message name="IChatService_Say_OutputMessage">
-    <wsdl:part name="parameters" element="tns:SayResponse" />
+  <wsdl:message name="IChatService_SendMessage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendMessageResponse" />
   </wsdl:message>
   <wsdl:message name="IChatService_Echo_InputMessage">
     <wsdl:part name="parameters" element="tns:Echo" />
@@ -84,8 +84,11 @@
   <wsdl:message name="IChatService_ReceiveBroadcast_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:ReceiveBroadcast" />
   </wsdl:message>
-  <wsdl:message name="IChatService_Receive_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:Receive" />
+  <wsdl:message name="IChatService_NotifyMessage_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:NotifyMessage" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_NotifyMessageSent_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:NotifyMessageSent" />
   </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="IChatService">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetVersion">
@@ -96,9 +99,9 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Connect" message="tns:IChatService_Connect_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IChatService/ConnectResponse" message="tns:IChatService_Connect_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Say">
-      <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Say" message="tns:IChatService_Say_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/SayResponse" message="tns:IChatService_Say_OutputMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SendMessage">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChatService/SendMessage" message="tns:IChatService_SendMessage_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/SendMessageResponse" message="tns:IChatService_SendMessage_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Echo">
       <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Echo" message="tns:IChatService_Echo_InputMessage" />
@@ -126,8 +129,11 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ReceiveBroadcast">
       <wsdl:output wsaw:Action="http://tempuri.org/IChatService/ReceiveBroadcast" message="tns:IChatService_ReceiveBroadcast_OutputCallbackMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Receive">
-      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/Receive" message="tns:IChatService_Receive_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="NotifyMessage">
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/NotifyMessage" message="tns:IChatService_NotifyMessage_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="NotifyMessageSent">
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/NotifyMessageSent" message="tns:IChatService_NotifyMessageSent_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IChatService" type="tns:IChatService">
@@ -151,8 +157,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="Say">
-      <soap12:operation soapAction="http://tempuri.org/IChatService/Say" style="document" />
+    <wsdl:operation name="SendMessage">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/SendMessage" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -214,8 +220,14 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="Receive">
-      <soap12:operation soapAction="http://tempuri.org/IChatService/Receive" style="document" />
+    <wsdl:operation name="NotifyMessage">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/NotifyMessage" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="NotifyMessageSent">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/NotifyMessageSent" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

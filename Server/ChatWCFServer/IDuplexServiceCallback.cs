@@ -13,7 +13,7 @@ namespace ChatServiceLib
     {
 
         [OperationContract(IsOneWay = true)]
-        void UserJoin(Client client);
+        void UserJoin(Client client, bool newUser);
 
         [OperationContract(IsOneWay = true)]
         void UserLeave(string userName, Guid serverGuid , DateTime time);
@@ -25,7 +25,10 @@ namespace ChatServiceLib
         void ReceiveBroadcast(Message msg);
 
         [OperationContract(IsOneWay = true)]
-        void Receive(Message msg);
+        void NotifyMessage(string fromUserName, Guid fromServerName, string toUserName, Guid toServerName, string message, DateTime date);
+
+        [OperationContract(IsOneWay = true)]
+        void NotifyMessageSent(DateTime date, bool sent);
 
     }
 }

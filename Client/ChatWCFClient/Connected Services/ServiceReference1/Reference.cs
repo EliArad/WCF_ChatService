@@ -22,24 +22,6 @@ namespace ChatWCFClientApi.ServiceReference1 {
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ContentField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid FromServerGuidField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string SenderNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime TimeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ToReceiverServerGuidField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string toReceiverNameField;
-        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -47,84 +29,6 @@ namespace ChatWCFClientApi.ServiceReference1 {
             }
             set {
                 this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Content {
-            get {
-                return this.ContentField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ContentField, value) != true)) {
-                    this.ContentField = value;
-                    this.RaisePropertyChanged("Content");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid FromServerGuid {
-            get {
-                return this.FromServerGuidField;
-            }
-            set {
-                if ((this.FromServerGuidField.Equals(value) != true)) {
-                    this.FromServerGuidField = value;
-                    this.RaisePropertyChanged("FromServerGuid");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string SenderName {
-            get {
-                return this.SenderNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.SenderNameField, value) != true)) {
-                    this.SenderNameField = value;
-                    this.RaisePropertyChanged("SenderName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime Time {
-            get {
-                return this.TimeField;
-            }
-            set {
-                if ((this.TimeField.Equals(value) != true)) {
-                    this.TimeField = value;
-                    this.RaisePropertyChanged("Time");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ToReceiverServerGuid {
-            get {
-                return this.ToReceiverServerGuidField;
-            }
-            set {
-                if ((this.ToReceiverServerGuidField.Equals(value) != true)) {
-                    this.ToReceiverServerGuidField = value;
-                    this.RaisePropertyChanged("ToReceiverServerGuid");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string toReceiverName {
-            get {
-                return this.toReceiverNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.toReceiverNameField, value) != true)) {
-                    this.toReceiverNameField = value;
-                    this.RaisePropertyChanged("toReceiverName");
-                }
             }
         }
         
@@ -247,11 +151,11 @@ namespace ChatWCFClientApi.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/Connect", ReplyAction="http://tempuri.org/IChatService/ConnectResponse")]
         System.Threading.Tasks.Task<bool> ConnectAsync(string userName, string freedesc, System.Guid serverGuid, System.DateTime time);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/Say", ReplyAction="http://tempuri.org/IChatService/SayResponse")]
-        bool Say(ChatWCFClientApi.ServiceReference1.Message msg);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/SendMessage", ReplyAction="http://tempuri.org/IChatService/SendMessageResponse")]
+        bool SendMessage(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/Say", ReplyAction="http://tempuri.org/IChatService/SayResponse")]
-        System.Threading.Tasks.Task<bool> SayAsync(ChatWCFClientApi.ServiceReference1.Message msg);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/SendMessage", ReplyAction="http://tempuri.org/IChatService/SendMessageResponse")]
+        System.Threading.Tasks.Task<bool> SendMessageAsync(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/Echo")]
         void Echo(ChatWCFClientApi.ServiceReference1.Message msg);
@@ -282,7 +186,7 @@ namespace ChatWCFClientApi.ServiceReference1 {
     public interface IChatServiceCallback {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/UserJoin")]
-        void UserJoin(ChatWCFClientApi.ServiceReference1.Client client);
+        void UserJoin(ChatWCFClientApi.ServiceReference1.Client client, bool newUser);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/UserLeave")]
         void UserLeave(string userName, System.Guid serverGuid, System.DateTime time);
@@ -293,8 +197,11 @@ namespace ChatWCFClientApi.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/ReceiveBroadcast")]
         void ReceiveBroadcast(ChatWCFClientApi.ServiceReference1.Message msg);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/Receive")]
-        void Receive(ChatWCFClientApi.ServiceReference1.Message msg);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/NotifyMessage")]
+        void NotifyMessage(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message, System.DateTime date);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatService/NotifyMessageSent")]
+        void NotifyMessageSent(System.DateTime date, bool sent);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -341,12 +248,12 @@ namespace ChatWCFClientApi.ServiceReference1 {
             return base.Channel.ConnectAsync(userName, freedesc, serverGuid, time);
         }
         
-        public bool Say(ChatWCFClientApi.ServiceReference1.Message msg) {
-            return base.Channel.Say(msg);
+        public bool SendMessage(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message) {
+            return base.Channel.SendMessage(fromUserName, fromServerName, toUserName, toServerName, message);
         }
         
-        public System.Threading.Tasks.Task<bool> SayAsync(ChatWCFClientApi.ServiceReference1.Message msg) {
-            return base.Channel.SayAsync(msg);
+        public System.Threading.Tasks.Task<bool> SendMessageAsync(string fromUserName, System.Guid fromServerName, string toUserName, System.Guid toServerName, string message) {
+            return base.Channel.SendMessageAsync(fromUserName, fromServerName, toUserName, toServerName, message);
         }
         
         public void Echo(ChatWCFClientApi.ServiceReference1.Message msg) {

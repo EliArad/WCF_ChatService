@@ -14,7 +14,9 @@ namespace ChatServiceLib
     ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class ChatService : IChatService 
     {
-         
+
+        object m_lock = new object();
+        
         Dictionary<Client, IDuplexServiceCallback> clients = new Dictionary<Client, IDuplexServiceCallback>();
          
         public ChatService()
@@ -37,21 +39,26 @@ namespace ChatServiceLib
                 ServerGuid = serverGuid,
                 Time = time 
             };
- 
-            
+
+            IDuplexServiceCallback callback = OperationContext.Current.GetCallbackChannel<IDuplexServiceCallback>();
             if (IsClientConnected(client) == false)
-            {
-                IDuplexServiceCallback callback = OperationContext.Current.GetCallbackChannel<IDuplexServiceCallback>();
+            {                
                 clients.Add(client, callback);             
                 Console.WriteLine("Number of connected clients: " + clients.Count);
                 var t = new Thread(() =>
                 {
-                    callback.UserJoin(client);
+                    callback.UserJoin(client, true);
                 });
                 t.Start();
             }
             else
-            {            
+            {
+                clients[client] = callback;
+                var t = new Thread(() =>
+                {
+                    callback.UserJoin(client, false);
+                });
+                t.Start();
                 return true;
             }
 
@@ -73,7 +80,7 @@ namespace ChatServiceLib
 
         public void Disconnect(string userName, Guid ServerGuid)
         {
-            //lock (m_connectLock)
+            //lock (m_lock)
             {
                 foreach (KeyValuePair<Client, IDuplexServiceCallback> p in clients)
                 {
@@ -109,17 +116,16 @@ namespace ChatServiceLib
 
         public bool Broadcast(Message msg)
         {
-            //lock (m_connectLock)
+            //lock (m_lock)
             {
                 Client c = null;
                 try
                 {
-                    Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
                     bool found = false;
                     foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
                     {
-                        if (client.Key.Name == msg.SenderName && client.Key.ServerGuid == msg.FromServerGuid)
-                            continue;
+                        //if (client.Key.Name == msg.SenderName && client.Key.ServerGuid == msg.FromServerGuid)
+                          //  continue;
 
                         c = client.Key;
                         var t = new Thread(() =>
@@ -144,19 +150,19 @@ namespace ChatServiceLib
 
         public bool BroadcastServer(Message msg)
         {
-            //lock (m_connectLock)
+            //lock (m_lock)
             {
                 Client c = null;
                 try
                 {
                     bool found = false;
-                    Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
+                    //Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
                     foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
                     {
-                        if (client.Key.Name == msg.SenderName && client.Key.ServerGuid == msg.FromServerGuid)
-                            continue;
+                        //if (client.Key.Name == msg.SenderName && client.Key.ServerGuid == msg.FromServerGuid)
+                          //  continue;
 
-                        if (client.Key.ServerGuid == msg.ToReceiverServerGuid)
+                        //if (client.Key.ServerGuid == msg.ToReceiverServerGuid)
                         {
                             c = client.Key;
                             var t = new Thread(() =>
@@ -179,44 +185,42 @@ namespace ChatServiceLib
             }
         }
 
-        public bool Say(Message msg)
+        public bool SendMessage(string fromUserName, 
+                                Guid fromServerName, 
+                                string toUserName, 
+                                Guid toServerName,
+                                string message)
         {
-            //lock (m_connectLock)
+            //lock (m_lock)
             {
                 Client c = null;
                 try
-                {
-                    Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
-                    bool found = false;
-                    foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
+                {                     
+                    IDuplexServiceCallback p = GetClient(toUserName, toServerName, out c);
+                    if (p != null)
                     {
-                        if (client.Key.Name == msg.toReceiverName && client.Key.ServerGuid == msg.ToReceiverServerGuid)
-                            continue;
-
-                        if (client.Key.Name == msg.SenderName && client.Key.ServerGuid == msg.FromServerGuid)
+                        var t = new Thread(() =>
                         {
-                            IDuplexServiceCallback p = GetClient(msg.toReceiverName, msg.ToReceiverServerGuid, out c);
-                            if (p != null)
+                            p.NotifyMessage(fromUserName, fromServerName, toUserName, toServerName, message, DateTime.Now);
+                            IDuplexServiceCallback p1 = GetClient(fromUserName, fromServerName, out c);
+                            if (p1 != null)
                             {
-                                var t = new Thread(() =>
-                                {
-                                    p.Receive(msg);
-                                });
-                                t.Start();
-                                
-                                found = true;
+                                p1.NotifyMessageSent(DateTime.Now, true);
                             }
-                        }
+                        });
+                        t.Start();
+                        return true;
                     }
-                    if (found == false)
+                    else
                     {
-                        IDuplexServiceCallback p = GetClient(msg.SenderName, msg.FromServerGuid, out c);
-                        if (p != null)
+                        IDuplexServiceCallback p1 = GetClient(fromUserName, fromServerName, out c);
+                        if (p1 != null)
                         {
-                            return false;
+                            p1.NotifyMessageSent(DateTime.Now, false);
+                            return true;
                         }
-                    }
-                    return true;
+                        return false;
+                    }                                             
                 }
                 catch (Exception err)
                 {
@@ -229,21 +233,21 @@ namespace ChatServiceLib
         }
         public void Echo(Message msg)
         {
-            //lock (m_connectLock)
+            //lock (m_lock)
             {
                 Client c = null;
                 try
                 {
-                    Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
+                    //Console.WriteLine("{0},{1},{2},{3},{4},{5}", msg.SenderName, msg.toReceiverName, msg.Content, msg.FromServerGuid, msg.ToReceiverServerGuid, msg.Time);
 
                     foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
                     {
-                        if (client.Key.Name == msg.toReceiverName && client.Key.ServerGuid == msg.ToReceiverServerGuid)
+                        //if (client.Key.Name == msg.toReceiverName && client.Key.ServerGuid == msg.ToReceiverServerGuid)
                         {
                             c = client.Key;
                             var t = new Thread(() =>
                             {
-                                client.Value.Receive(msg);
+                                //client.Value.NotifyMessage(msg);
                             });
                             t.Start();
                             break;
