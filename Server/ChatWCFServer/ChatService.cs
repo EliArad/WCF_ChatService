@@ -28,7 +28,7 @@ namespace ChatServiceLib
         }
         public bool Connect(string userName, string freedesc, Guid serverGuid, DateTime time)
         {
-            IDuplexServiceCallback Callback = OperationContext.Current.GetCallbackChannel<IDuplexServiceCallback>();
+           
              
             Client client = new Client
             {
@@ -38,57 +38,26 @@ namespace ChatServiceLib
                 Time = time 
             };
  
-            if (!clients.ContainsValue(Callback))
-             {
-                if (IsClientConnected(client) == false)
+            
+            if (IsClientConnected(client) == false)
+            {
+                IDuplexServiceCallback callback = OperationContext.Current.GetCallbackChannel<IDuplexServiceCallback>();
+                clients.Add(client, callback);             
+                Console.WriteLine("Number of connected clients: " + clients.Count);
+                var t = new Thread(() =>
                 {
-                    List<Client> toRemove = new List<Client>();
-                    foreach (KeyValuePair<Client, IDuplexServiceCallback> p in clients)
-                    {
-                        if (p.Key.Name == client.Name && p.Key.ServerGuid == client.ServerGuid)
-                        {
-                            toRemove.Add(p.Key);
-                        }
-                    }
-                    foreach (Client p in toRemove)
-                    {
-                        clients.Remove(p);
-                        //clientList.Remove(p);
-                    }
-                    clients.Add(client, Callback);
-                    //clientList.Add(client);
-                    Console.WriteLine("Number of connected clients: " + clients.Count);
-                }
-                else
-                {
-                    clients[client] = Callback;
-                    return true;
-                }
-
-                foreach (Client key in clients.Keys)
-                {
-                    IDuplexServiceCallback callback = clients[key];
-                    try
-                    {
-                        //callback.RefreshClients(clientList);
-                        var t = new Thread(()=>
-                        {
-                            callback.UserJoin(client);
-                        });
-                        t.Start();
-                    }
-                    catch
-                    {
-                        clients.Remove(key);
-                        return false;
-                    }
-                }
-                return true;
+                    callback.UserJoin(client);
+                });
+                t.Start();
             }
             else
-            {
-                return false;
-            } 
+            {            
+                return true;
+            }
+
+             
+            return true;
+            
         }
         bool IsClientConnected(Client client)
         {

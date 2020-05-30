@@ -18,7 +18,10 @@ namespace ChatWCFClientApi
         bool m_IsConnected = false;
 
         public delegate void ClientCallbackMessage(string fieldGuid, string ipAddress, int code, string msg, DateTime startTime);
-        ClientCallbackMessage pClientCallback;
+
+        string m_userName;
+        string m_freedesc;
+        Guid m_serverGuid;
 
 
         public ChatWCFClient(string ipAddress, IChatServiceCallback callback)
@@ -55,14 +58,14 @@ namespace ChatWCFClientApi
             }
         }
 
-        public bool Leave(string userName, Guid serverGuid, out string outMessage)
+        public bool Leave(out string outMessage)
         {
             outMessage = string.Empty;
             if (m_client != null)
             {
                 try
                 {                     
-                  m_client.Disconnect(userName, serverGuid);
+                  m_client.Disconnect(m_userName, m_serverGuid);
                   return true;
                 }
                 catch (Exception err)
@@ -84,7 +87,10 @@ namespace ChatWCFClientApi
             if (m_client != null)
             {
                 try
-                {                     
+                {
+                    m_userName = userName;
+                    m_freedesc = freedesc;
+                    m_serverGuid = serverGuid;
                     m_client.Connect(userName, freedesc, serverGuid, time);
                     m_IsConnected = true;
                     return true;
