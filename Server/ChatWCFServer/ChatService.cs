@@ -16,13 +16,10 @@ namespace ChatServiceLib
     {
 
         object m_lock = new object();
-        Thread m_broadcastThread;
         Dictionary<Client, IDuplexServiceCallback> clients = new Dictionary<Client, IDuplexServiceCallback>();
          
         public ChatService()
         {
-            m_broadcastThread = new Thread(BroadcastThread);
-            m_broadcastThread.Start();
         }
 
         
@@ -36,12 +33,15 @@ namespace ChatServiceLib
                     FreeDesc = freedesc,
                     Name = userName,
                     ServerGuid = serverGuid,
-                    Time = time
                 };
 
                 IDuplexServiceCallback callback = OperationContext.Current.GetCallbackChannel<IDuplexServiceCallback>();
                 if (IsClientConnected(client) == false)
                 {
+                    if (clients.Count >= 4)
+                    {
+                        Console.Write("e");
+                    }
                     clients.Add(client, callback);
                     Console.WriteLine("Number of connected clients: " + clients.Count);
                     var t = new Thread(() =>
@@ -52,7 +52,8 @@ namespace ChatServiceLib
                 }
                 else
                 {
-                    clients[client] = callback;
+                    clients.Remove(client);
+                    clients.Add(client, callback);
                     var t = new Thread(() =>
                     {
                         callback.UserJoin(client, false);
@@ -76,7 +77,47 @@ namespace ChatServiceLib
             return false;
         }
 
+        bool IsClientConnected(string userName, Guid serverGuid)
+        {
+            foreach (KeyValuePair<Client, IDuplexServiceCallback> p in clients)
+            {
+                if (p.Key.Name == userName && p.Key.ServerGuid == serverGuid)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void Disconnect(string userName, Guid ServerGuid, bool notify)
+        {
+            lock (m_lock)
+            {
+                foreach (KeyValuePair<Client, IDuplexServiceCallback> p in clients)
+                {
+                    if (userName == p.Key.Name && ServerGuid == p.Key.ServerGuid)
+                    {
+                        if (notify == true)
+                        {
+                            var t = new Thread(() =>
+                            {
+                                p.Value.UserLeave(userName, ServerGuid, DateTime.Now);
+                                this.clients.Remove(p.Key);
+                                Console.WriteLine("Number of connected clients: " + clients.Count);
+                            });
+                            t.Start();
+                        }       
+                        else
+                        {
+                            this.clients.Remove(p.Key);
+                            Console.WriteLine("Number of connected clients: " + clients.Count);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void _Disconnect(string userName, Guid ServerGuid, bool notify)
         {
             //lock (m_lock)
             {
@@ -90,12 +131,14 @@ namespace ChatServiceLib
                             {
                                 p.Value.UserLeave(userName, ServerGuid, DateTime.Now);
                                 this.clients.Remove(p.Key);
+                                Console.WriteLine("Number of connected clients: " + clients.Count);
                             });
                             t.Start();
-                        }       
+                        }
                         else
                         {
                             this.clients.Remove(p.Key);
+                            Console.WriteLine("Number of connected clients: " + clients.Count);
                         }
                     }
                 }
@@ -118,64 +161,17 @@ namespace ChatServiceLib
             return null;
         }
 
-        enum MSG_TYPE
-        {
-            BROADCAST,
-            SEND_MESSAGE
-        }
-        struct Message
-        {
-            public string Name;
-            public Guid ServerGuid;
-            public string fromUserName;
-            public Guid fromServerGuid;
-            public string message;
-            public bool broadcast;
-            public MSG_TYPE msgType;
-            public IDuplexServiceCallback callback;
-        }
-        ConcurrentQueue<Message> m_broadcastMessage = new ConcurrentQueue<Message>();
-        AutoResetEvent m_broadcastEvent = new AutoResetEvent(false);
-        bool m_running = true;
-        void BroadcastThread()
-        {
-            while (m_running)
-            {
-                m_broadcastEvent.WaitOne();
-                if (m_running == false)
-                    return;
-                do
-                {
-                    bool b = m_broadcastMessage.TryDequeue(out Message msg);
-                    if (b == true)
-                    {
-                        try
-                        {
-                            if (msg.msgType == MSG_TYPE.BROADCAST)
-                            {
-                                msg.callback.ReceiveBroadcast(msg.Name, msg.ServerGuid, msg.fromUserName, msg.fromServerGuid, msg.message, msg.broadcast, DateTime.Now);
-                            } else                            
-                            if (msg.msgType == MSG_TYPE.SEND_MESSAGE)
-                            {
-                                msg.callback.NotifyMessage(msg.Name, msg.ServerGuid, msg.fromUserName, msg.fromServerGuid, msg.message, DateTime.Now);
-                                //Thread.Sleep(10);
-                                //msg.callback.NotifyMessageSent(DateTime.Now, true);
-                            }
-                        }
-                        catch (Exception err)
-                        {
-
-                        }
-                        Thread.Sleep(1);
-                    }
-                } while (m_broadcastMessage.Count > 0);
-            }
-        }
         public bool Broadcast(string fromUserName, Guid fromServerGuid, string message)
         {
             lock (m_lock)
             {
-                
+
+                if (IsClientConnected(fromUserName, fromServerGuid) == false)
+                {
+                    return false;
+                }
+
+
                 bool broadcast;
                 foreach (KeyValuePair<Client, IDuplexServiceCallback> client in clients)
                 {
@@ -188,30 +184,19 @@ namespace ChatServiceLib
                         else
                             broadcast = true;
 
+                        callback.ReceiveBroadcast(c.Name, c.ServerGuid, fromUserName, fromServerGuid, message, broadcast, DateTime.Now);
 
-                        Message m = new Message {
-                            Name = c.Name,
-                            ServerGuid = c.ServerGuid,
-                            fromUserName = fromUserName,
-                            fromServerGuid = fromServerGuid,
-                            message = message,
-                            msgType = MSG_TYPE.BROADCAST,
-                            broadcast = broadcast
-                        };
-                        m.callback = callback;
-                        m_broadcastMessage.Enqueue(m);
+                       
                     }
                     catch (Exception err)
                     {
                         if (c != null)
-                            Disconnect(c.Name, c.ServerGuid, true);
+                            _Disconnect(c.Name, c.ServerGuid, true);
                         Console.WriteLine(err.Message);
                         return false;
                     }
                 }
-                m_broadcastEvent.Set();
-                return true;
-                 
+                return true;                 
             }
         }
 
@@ -245,7 +230,7 @@ namespace ChatServiceLib
                 catch (Exception err)
                 {
                     if (c != null)
-                        Disconnect(c.Name, c.ServerGuid, true);
+                        _Disconnect(c.Name, c.ServerGuid, true);
                     Console.WriteLine(err.Message);
                     return false;
                 }
@@ -270,6 +255,9 @@ namespace ChatServiceLib
                         p = GetClient(toUserName, toServerName, out c);
                         IDuplexServiceCallback p1 = GetClient(fromUserName, fromServerGuid, out c);
 
+                        p.NotifyMessage(c.Name, c.ServerGuid, fromUserName, fromServerGuid, message, DateTime.Now);
+
+                        /*
                         Message m = new Message
                         {
                             Name = c.Name,
@@ -283,8 +271,8 @@ namespace ChatServiceLib
                         m.callback = p;
                         m_broadcastMessage.Enqueue(m);
                         m_broadcastEvent.Set();                             
-                       
-                       
+                       */
+
                         return true;
                     }
                     else
@@ -301,7 +289,7 @@ namespace ChatServiceLib
                 catch (Exception err)
                 {
                     if (c != null)
-                        Disconnect(c.Name, c.ServerGuid, true);
+                        _Disconnect(c.Name, c.ServerGuid, true);
                     Console.WriteLine(err.Message);
                     return false;
                 }

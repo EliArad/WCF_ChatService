@@ -15,9 +15,8 @@ namespace ChatServiceLib
     public class Client
     {
         public string Name;
-        public DateTime Time;
-        public string FreeDesc;
         public Guid ServerGuid;
+        public string FreeDesc;
     }
 
 }

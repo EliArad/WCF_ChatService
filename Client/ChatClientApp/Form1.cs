@@ -17,7 +17,9 @@ namespace ChatClientApp
     {
 
         ChatWCFClient[] m_client = new ChatWCFClient[4];
-        Guid m_serverGuid = new Guid();
+
+        Guid[] m_serverGuid = new Guid[4];
+
         public Form1()
         {
             InitializeComponent();
@@ -25,6 +27,7 @@ namespace ChatClientApp
             for (int i = 0; i < m_client.Length; i++)
             {
                 m_client[i] = new ChatWCFClient("10.0.0.17", this);
+                m_serverGuid[i] = Guid.NewGuid();
             }
         }
         
@@ -35,7 +38,7 @@ namespace ChatClientApp
             {
                 try
                 {
-                    m_client[0].Connect(txtUserName.Text, "freedesc", m_serverGuid, DateTime.Now, out string outMessage);
+                    m_client[0].Connect(txtUserName.Text, "freedesc", m_serverGuid[0], DateTime.Now, out string outMessage);
                 }
                 catch (Exception err)
                 {
@@ -92,7 +95,7 @@ namespace ChatClientApp
                 string userName = textBox1.Text;
                 await Task.Run(() =>
                 {
-                    m_client[1].Connect(userName, "freedesc", m_serverGuid, DateTime.Now, out string outMessage);
+                    m_client[1].Connect(userName, "freedesc", m_serverGuid[1], DateTime.Now, out string outMessage);
                 });
             }
             catch (Exception err)
@@ -108,7 +111,7 @@ namespace ChatClientApp
                 string userName = textBox2.Text;
                 await Task.Run(() =>
                 {
-                    m_client[2].Connect(userName, "freedesc", m_serverGuid, DateTime.Now, out string outMessage);
+                    m_client[2].Connect(userName, "freedesc", m_serverGuid[2], DateTime.Now, out string outMessage);
                 });
             }
             catch (Exception err)
@@ -173,11 +176,14 @@ namespace ChatClientApp
             timer2.Enabled = true;
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private async void button6_Click(object sender, EventArgs e)
         {
             try
             {
-                m_client[3].Connect(textBox3.Text, "freedesc", m_serverGuid, DateTime.Now, out string outMessage);
+                await Task.Run(() =>
+                {
+                    m_client[3].Connect(textBox3.Text, "freedesc", m_serverGuid[3], DateTime.Now, out string outMessage);
+                });
             }
             catch (Exception err)
             {
