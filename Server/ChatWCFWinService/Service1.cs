@@ -6,8 +6,7 @@ using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceProcess;
-using System.Threading;
-
+ 
 
 namespace ChatWCFWinService
 {
@@ -15,9 +14,8 @@ namespace ChatWCFWinService
     {
         ServiceHost host = null;
         static string urlMeta, urlService = "";
-        string m_ipAddress;
-        bool m_running = true;
-        Thread m_thread;
+        
+       
         public Service1()
         {
             InitializeComponent();
@@ -117,9 +115,7 @@ namespace ChatWCFWinService
         {
             if (host != null)
             {
-                m_running = false;
-                if (m_thread != null)
-                    m_thread.Join();
+               
                 host.Close();
             }
         }
