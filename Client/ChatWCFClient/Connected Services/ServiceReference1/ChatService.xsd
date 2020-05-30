@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-  <xs:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/ChatServiceLib" />
+  <xs:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/System" />
   <xs:element name="GetVersion">
     <xs:complexType>
       <xs:sequence />
@@ -94,7 +94,8 @@
   <xs:element name="UserJoin">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="client" nillable="true" type="q8:Client" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="serverGuid" type="q8:guid" />
         <xs:element minOccurs="0" name="newUser" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
@@ -108,10 +109,10 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="RefreshClients">
+  <xs:element name="ClientsList">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/ChatServiceLib" minOccurs="0" name="clients" nillable="true" type="q10:ArrayOfClient" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="clients" nillable="true" type="q10:ArrayOfTupleOfstringguid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

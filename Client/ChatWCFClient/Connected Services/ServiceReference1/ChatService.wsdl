@@ -33,7 +33,7 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/ChatServiceLib" />
+      <xsd:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/System" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IChatService_GetVersion_InputMessage">
@@ -75,8 +75,8 @@
   <wsdl:message name="IChatService_UserLeave_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:UserLeave" />
   </wsdl:message>
-  <wsdl:message name="IChatService_RefreshClients_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:RefreshClients" />
+  <wsdl:message name="IChatService_ClientsList_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ClientsList" />
   </wsdl:message>
   <wsdl:message name="IChatService_ReceiveBroadcast_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:ReceiveBroadcast" />
@@ -117,8 +117,8 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UserLeave">
       <wsdl:output wsaw:Action="http://tempuri.org/IChatService/UserLeave" message="tns:IChatService_UserLeave_OutputCallbackMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="RefreshClients">
-      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/RefreshClients" message="tns:IChatService_RefreshClients_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ClientsList">
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/ClientsList" message="tns:IChatService_ClientsList_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ReceiveBroadcast">
       <wsdl:output wsaw:Action="http://tempuri.org/IChatService/ReceiveBroadcast" message="tns:IChatService_ReceiveBroadcast_OutputCallbackMessage" />
@@ -196,8 +196,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="RefreshClients">
-      <soap12:operation soapAction="http://tempuri.org/IChatService/RefreshClients" style="document" />
+    <wsdl:operation name="ClientsList">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/ClientsList" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

@@ -48,18 +48,18 @@ namespace ChatClientApp
 
         }
 
-        public void UserJoin(Client client, bool newUser)
+        public void UserJoin(string userName , Guid serverGuid, bool newUser)
         {
             if (newUser == true)
-                txtStatus.AppendText("User: " + client.Name + " has joined" + Environment.NewLine);
+                txtStatus.AppendText("User: " + userName + " has joined" + Environment.NewLine);
             else
             {
-                txtStatus.AppendText("User: " + client.Name + " already joined" + Environment.NewLine);
+                txtStatus.AppendText("User: " + userName + " already joined" + Environment.NewLine);
 
             }
         }
  
-        public void RefreshClients(Client[] clients)
+        public void ClientsList(Tuple<string, System.Guid>[] clients)
         {
 
         }
@@ -164,7 +164,7 @@ namespace ChatClientApp
             await Task.Run(() =>
             {
 
-                bool b = m_client[x1].SendMessage(m_client[x1].UserName,
+                bool b = m_client[x1].SendMessage(m_client[x2].UserName,
                                                     m_client[x2].ServerGuid,
                                                     str,
                                                     out string outMessage);

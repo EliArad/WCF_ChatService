@@ -13,13 +13,13 @@ namespace ChatServiceLib
     {
 
         [OperationContract(IsOneWay = true)]
-        void UserJoin(Client client, bool newUser);
+        void UserJoin(string userName , Guid serverGuid, bool newUser);
 
         [OperationContract(IsOneWay = true)]
         void UserLeave(string userName, Guid serverGuid , DateTime time);
 
         [OperationContract(IsOneWay = true)]
-        void RefreshClients(List<Client> clients);
+        void ClientsList(List<Tuple<string, Guid>> clients);
 
         [OperationContract(IsOneWay = true)]
         void ReceiveBroadcast(string toUserName, Guid toServerGuid, string fromUserName, Guid fromServerGuid, string message, bool broadcast, DateTime date);

@@ -52,7 +52,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatContracts.cs" />
     <Compile Include="IDuplexServiceCallback.cs" />
     <Compile Include="IChatService.cs" />
     <Compile Include="ChatService.cs" />
