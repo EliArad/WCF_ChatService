@@ -24,6 +24,7 @@
   <Metadata>
     <MetadataFile FileName="ChatService.xsd" MetadataType="Schema" ID="dd3556e4-e743-4c03-a904-e172ad8c9cc8" SourceId="1" SourceUrl="http://10.0.0.17:8002/ChatService?xsd=xsd0" />
     <MetadataFile FileName="ChatService1.xsd" MetadataType="Schema" ID="923f2074-4bb7-47b6-b106-e96a0e3d1d9a" SourceId="1" SourceUrl="http://10.0.0.17:8002/ChatService?xsd=xsd1" />
+    <MetadataFile FileName="ChatService2.xsd" MetadataType="Schema" ID="4e02f317-02df-414d-8acb-ce695f836898" SourceId="1" SourceUrl="http://10.0.0.17:8002/ChatService?xsd=xsd2" />
     <MetadataFile FileName="ChatService.wsdl" MetadataType="Wsdl" ID="4a796510-9afe-4d9c-bbcd-015cc42dcdb9" SourceId="1" SourceUrl="http://10.0.0.17:8002/ChatService" />
   </Metadata>
   <Extensions>

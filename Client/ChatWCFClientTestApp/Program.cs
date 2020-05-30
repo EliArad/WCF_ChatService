@@ -36,7 +36,7 @@ namespace ChatWCFClientTestApp
                         Thread.Sleep(1000); 
                     }
                 }
-                p.Registration("ee");
+                p.Connect("user1", "freedesc", new Guid(), DateTime.Now);
                 p.msgEvent += MsgCallback;
                 p.dataEvent += DataCallback;
                  

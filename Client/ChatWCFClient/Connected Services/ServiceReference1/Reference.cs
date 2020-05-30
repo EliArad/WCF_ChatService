@@ -9,23 +9,124 @@
 //------------------------------------------------------------------------------
 
 namespace ChatWCFClientApi.ServiceReference1 {
+    using System.Runtime.Serialization;
+    using System;
     
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Client", Namespace="http://schemas.datacontract.org/2004/07/ChatServiceLib")]
+    [System.SerializableAttribute()]
+    public partial class Client : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FreeDescField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ServerGuidField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime TimeField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FreeDesc {
+            get {
+                return this.FreeDescField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FreeDescField, value) != true)) {
+                    this.FreeDescField = value;
+                    this.RaisePropertyChanged("FreeDesc");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ServerGuid {
+            get {
+                return this.ServerGuidField;
+            }
+            set {
+                if ((this.ServerGuidField.Equals(value) != true)) {
+                    this.ServerGuidField = value;
+                    this.RaisePropertyChanged("ServerGuid");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime Time {
+            get {
+                return this.TimeField;
+            }
+            set {
+                if ((this.TimeField.Equals(value) != true)) {
+                    this.TimeField = value;
+                    this.RaisePropertyChanged("Time");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReference1.IChatService", CallbackContract=typeof(ChatWCFClientApi.ServiceReference1.IChatServiceCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IChatService {
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/Registration", ReplyAction="http://tempuri.org/IChatService/RegistrationResponse")]
-        void Registration(string fieldGuid);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/Registration", ReplyAction="http://tempuri.org/IChatService/RegistrationResponse")]
-        System.Threading.Tasks.Task RegistrationAsync(string fieldGuid);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/GetVersion", ReplyAction="http://tempuri.org/IChatService/GetVersionResponse")]
         string GetVersion();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/GetVersion", ReplyAction="http://tempuri.org/IChatService/GetVersionResponse")]
         System.Threading.Tasks.Task<string> GetVersionAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/Connect", ReplyAction="http://tempuri.org/IChatService/ConnectResponse")]
+        bool Connect(string userName, string freedesc, System.Guid serverGuid, System.DateTime time);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChatService/Connect", ReplyAction="http://tempuri.org/IChatService/ConnectResponse")]
+        System.Threading.Tasks.Task<bool> ConnectAsync(string userName, string freedesc, System.Guid serverGuid, System.DateTime time);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, IsTerminating=true, Action="http://tempuri.org/IChatService/Disconnect")]
+        void Disconnect(ChatWCFClientApi.ServiceReference1.Client userName);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, IsTerminating=true, Action="http://tempuri.org/IChatService/Disconnect")]
+        System.Threading.Tasks.Task DisconnectAsync(ChatWCFClientApi.ServiceReference1.Client userName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -66,20 +167,28 @@ namespace ChatWCFClientApi.ServiceReference1 {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public void Registration(string fieldGuid) {
-            base.Channel.Registration(fieldGuid);
-        }
-        
-        public System.Threading.Tasks.Task RegistrationAsync(string fieldGuid) {
-            return base.Channel.RegistrationAsync(fieldGuid);
-        }
-        
         public string GetVersion() {
             return base.Channel.GetVersion();
         }
         
         public System.Threading.Tasks.Task<string> GetVersionAsync() {
             return base.Channel.GetVersionAsync();
+        }
+        
+        public bool Connect(string userName, string freedesc, System.Guid serverGuid, System.DateTime time) {
+            return base.Channel.Connect(userName, freedesc, serverGuid, time);
+        }
+        
+        public System.Threading.Tasks.Task<bool> ConnectAsync(string userName, string freedesc, System.Guid serverGuid, System.DateTime time) {
+            return base.Channel.ConnectAsync(userName, freedesc, serverGuid, time);
+        }
+        
+        public void Disconnect(ChatWCFClientApi.ServiceReference1.Client userName) {
+            base.Channel.Disconnect(userName);
+        }
+        
+        public System.Threading.Tasks.Task DisconnectAsync(ChatWCFClientApi.ServiceReference1.Client userName) {
+            return base.Channel.DisconnectAsync(userName);
         }
     }
 }

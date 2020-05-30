@@ -10,30 +10,12 @@
 namespace ChatServiceLib
 {
     using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-
-    [DataContract]
-    public class PData1
+ 
+    public class Client
     {
-        public bool data ;
-        public string str ;
-
-        [DataMember]
-        public bool valueps
-        {
-            get { return data; }
-            set { value = data; }
-        }
-
-        [DataMember]
-        public string strps
-        {
-            get { return str; }
-            set { str = value; }
-        }
-
-    
-
+        public string Name;
+        public DateTime Time;
+        public string FreeDesc;
+        public Guid ServerGuid;
     }
 }

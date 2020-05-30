@@ -12,14 +12,26 @@ namespace ChatServiceLib
                       CallbackContract = typeof(IDuplexServiceCallback))]
     public interface IChatService
     {
-
-        [OperationContract]
-        void Registration(string fieldGuid);
          
         [OperationContract]
         string GetVersion();
 
+
+        [OperationContract]
+        bool Connect(string userName, string freedesc, Guid serverGuid, DateTime time);
+          
+
+        //[OperationContract()]
+        //bool Broadcast(Message msg);
+
+        //[OperationContract()]
+        //bool BroadcastServer(Message msg);
+
         
+        [OperationContract(IsOneWay = true, IsTerminating = true)]
+        void Disconnect(Client userName);
+
+
     }
 
 }

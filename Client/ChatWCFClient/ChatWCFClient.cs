@@ -63,14 +63,13 @@ namespace ChatWCFClientApi
             }
         }
           
-        public void Registration(string baseGuid)
+        public void Connect(string userName, string freedesc, Guid serverGuid, DateTime time)
         {
             if (m_client != null)
             {
                 try
-                {
-                     
-                    m_client.Registration(baseGuid);
+                {                     
+                    m_client.Connect(userName, freedesc, serverGuid, time);
                     m_IsConnected = true;
                 }
                 catch (Exception err)

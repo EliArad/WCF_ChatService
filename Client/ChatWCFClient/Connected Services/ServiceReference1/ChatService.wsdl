@@ -33,19 +33,23 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://10.0.0.17:8002/ChatService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/ChatServiceLib" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IChatService_Registration_InputMessage">
-    <wsdl:part name="parameters" element="tns:Registration" />
-  </wsdl:message>
-  <wsdl:message name="IChatService_Registration_OutputMessage">
-    <wsdl:part name="parameters" element="tns:RegistrationResponse" />
-  </wsdl:message>
   <wsdl:message name="IChatService_GetVersion_InputMessage">
     <wsdl:part name="parameters" element="tns:GetVersion" />
   </wsdl:message>
   <wsdl:message name="IChatService_GetVersion_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_Connect_InputMessage">
+    <wsdl:part name="parameters" element="tns:Connect" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_Connect_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConnectResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChatService_Disconnect_InputMessage">
+    <wsdl:part name="parameters" element="tns:Disconnect" />
   </wsdl:message>
   <wsdl:message name="IChatService_NotifyCallbackMessage_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:NotifyCallbackMessage" />
@@ -54,13 +58,16 @@
     <wsdl:part name="parameters" element="tns:NotifyDataCallback" />
   </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="IChatService">
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Registration">
-      <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Registration" message="tns:IChatService_Registration_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/RegistrationResponse" message="tns:IChatService_Registration_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetVersion">
       <wsdl:input wsaw:Action="http://tempuri.org/IChatService/GetVersion" message="tns:IChatService_GetVersion_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IChatService/GetVersionResponse" message="tns:IChatService_GetVersion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Connect">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Connect" message="tns:IChatService_Connect_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatService/ConnectResponse" message="tns:IChatService_Connect_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="true" name="Disconnect">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChatService/Disconnect" message="tns:IChatService_Disconnect_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="NotifyCallbackMessage">
       <wsdl:output wsaw:Action="http://tempuri.org/IChatService/NotifyCallbackMessage" message="tns:IChatService_NotifyCallbackMessage_OutputCallbackMessage" />
@@ -72,15 +79,6 @@
   <wsdl:binding name="NetTcpBinding_IChatService" type="tns:IChatService">
     <wsp:PolicyReference URI="#NetTcpBinding_IChatService_policy" />
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
-    <wsdl:operation name="Registration">
-      <soap12:operation soapAction="http://tempuri.org/IChatService/Registration" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="GetVersion">
       <soap12:operation soapAction="http://tempuri.org/IChatService/GetVersion" style="document" />
       <wsdl:input>
@@ -89,6 +87,21 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Connect">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/Connect" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Disconnect">
+      <soap12:operation soapAction="http://tempuri.org/IChatService/Disconnect" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="NotifyCallbackMessage">
       <soap12:operation soapAction="http://tempuri.org/IChatService/NotifyCallbackMessage" style="document" />

@@ -7,17 +7,13 @@ using System.ServiceModel;
 
 namespace ChatServiceLib
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "TestService" in both code and config file together.
+    
     
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class ChatService : IChatService 
     {
-        
-          
-        public Dictionary<string, IDuplexServiceCallback> listCallback = new Dictionary<string,IDuplexServiceCallback>();
-      
-       
-
+         
+        Dictionary<Client, IDuplexServiceCallback> clients = new Dictionary<Client, IDuplexServiceCallback>();
          
         public ChatService()
         {
@@ -27,115 +23,100 @@ namespace ChatServiceLib
         public void Load(string configFileName)
         {
              
-        } 
-        public void Registration(string baseFieldGuid)
+        }
+        public bool Connect(string userName, string freedesc, Guid serverGuid, DateTime time)
         {
             IDuplexServiceCallback Callback = OperationContext.Current.GetCallbackChannel<IDuplexServiceCallback>();
 
-            Console.WriteLine("Registration: " + baseFieldGuid);
+            Console.WriteLine("Registration: " + userName);
 
+            Client client = new Client
+            {
+                FreeDesc = freedesc,
+                Name = userName,
+                ServerGuid = serverGuid,
+                Time = time 
+            };
+
+            /*
             if (listCallback.ContainsKey(baseFieldGuid) == false)
                 listCallback.Add(baseFieldGuid, Callback);
             else
                 listCallback[baseFieldGuid] = Callback;
- 
-        }
-       
-        
-        void BroadcastMessage(int h)
-        {
-            again:
-            int count = listCallback.Count;
-            //Console.WriteLine("broadcast to: {0}", count);
+            */
 
-            foreach (KeyValuePair<string, IDuplexServiceCallback> entry in listCallback)            
-            {
-                try
+            if (!clients.ContainsValue(Callback))
+             {
+                if (clients.ContainsKey(client) == false)
                 {
+                    List<Client> toRemove = new List<Client>();
+                    foreach (KeyValuePair<Client, IDuplexServiceCallback> p in clients)
+                    {
+                        if (p.Key.Name == client.Name && p.Key.ServerGuid == client.ServerGuid)
+                        {
+                            toRemove.Add(p.Key);
+                        }
+                    }
+                    foreach (Client p in toRemove)
+                    {
+                        clients.Remove(p);
+                        //clientList.Remove(p);
+                    }
+                    clients.Add(client, Callback);
+                    //clientList.Add(client);
+                    Console.WriteLine("Number of connected clients: " + clients.Count);
+                }
+                else
+                {
+                    clients[client] = Callback;
+                }
+
+                foreach (Client key in clients.Keys)
+                {
+                    IDuplexServiceCallback callback = clients[key];
                     try
                     {
-                        //entry.Value.NotifyDataCallback(m_fieldGuid, m_ipAddress, chat_WCF_SERVER,(int)code, buf, size, DateTime.Now);
+                        //callback.RefreshClients(clientList);
+                        //callback.UserJoin(client);
                     }
-                    catch (Exception err)
+                    catch
                     {
-                        Console.WriteLine(err.Message);
-                        listCallback.Remove(entry.Key);
-                        goto again;
+                        clients.Remove(key);
+                        return false;
                     }
                 }
-                catch (Exception err)
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+ 
+        }
+        public void Disconnect(Client client)
+        {
+            //lock (m_connectLock)
+            {
+                foreach (Client c in clients.Keys)
                 {
-                    Console.WriteLine(err.Message);
+                    if (client.Name == c.Name && client.ServerGuid == c.ServerGuid)
+                    {
+
+                        this.clients.Remove(c);
+                        //this.clientList.Remove(c);
+                        foreach (IDuplexServiceCallback callback in clients.Values)
+                        {
+                            //callback.RefreshClients(this.clientList);
+                            //callback.UserLeave(client);
+                        }
+                    }
                 }
             }
         }
-        
-     
-        void BroadcastMessage()
-        {
-        again:
-            //Console.WriteLine("broadcast to: {0}", listCallback.Count);
-
- 
-           
-            foreach (KeyValuePair<string, IDuplexServiceCallback> entry in listCallback)  
-            {
-                try
-                {
-                    try
-                    {
-                        //entry.Value.NotifyDataCallback(m_fieldGuid, 
-                        //                             m_ipAddress,
-                        //                           chat_WCF_SERVER, 
-                        //                         (int)PhidgetNotify.PhidgetPortStatus,
-                        //                      buffer,
-                        //                       buffer.Length, DateTime.Now);
-                    }
-                    catch (Exception err)
-                    {
-                        listCallback.Remove(entry.Key);
-                        goto again;
-                    }
-                }
-                catch (Exception err)
-                {
-                    Console.WriteLine(err.Message);
-                }
-            }
-        }
-  
         public string GetVersion()
         {
             return "1";
         }
-
-        void BroadcastMessage(int code, string msg)
-        {
-            again:
-            int count = listCallback.Count;
-          
-            //Console.WriteLine("broadcast to: {0}", count);
-            foreach (KeyValuePair<string, IDuplexServiceCallback> entry in listCallback)  
-            {
-                try
-                {
-                    //Console.WriteLine("{0} , {1}", code, msg);
-                    try
-                    {
-                        //entry.Value.NotifyCallbackMessage(m_fieldGuid, m_ipAddress,chat_WCF_SERVER, code, msg, DateTime.Now);
-                    }
-                    catch (Exception err)
-                    {
-                        Console.WriteLine(err.Message);
-                        listCallback.Remove(entry.Key);
-                        goto again;
-                    }
-                }
-                catch (Exception err)
-                {
-                    Console.WriteLine(err.Message);
-                }
-            }
-        }
+         
     }
 }
