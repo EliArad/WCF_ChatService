@@ -20,13 +20,14 @@ namespace ChatClientApp
 
         Guid[] m_serverGuid = new Guid[4];
 
+        string ipAddress = "10.0.0.17";
         public Form1()
         {
             InitializeComponent();
              
             for (int i = 0; i < m_client.Length; i++)
             {
-                m_client[i] = new ChatWCFClient("10.0.0.17", this);
+                m_client[i] = new ChatWCFClient(ipAddress, this);
                 m_serverGuid[i] = Guid.NewGuid();
             }
         }
@@ -38,7 +39,11 @@ namespace ChatClientApp
             {
                 try
                 {
-                    m_client[0].Connect(txtUserName.Text, "freedesc", m_serverGuid[0], DateTime.Now, out string outMessage);
+                    if (m_client[0].Connect(txtUserName.Text, "freedesc", m_serverGuid[0], DateTime.Now, out string outMessage) == false)
+                    {
+                        m_client[0] = new ChatWCFClient(ipAddress, this);
+                        m_client[0].Connect(txtUserName.Text, "freedesc", m_serverGuid[0], DateTime.Now, out outMessage);
+                    }
                 }
                 catch (Exception err)
                 {
@@ -51,11 +56,12 @@ namespace ChatClientApp
         public void UserJoin(string userName , Guid serverGuid, bool newUser)
         {
             if (newUser == true)
-                txtStatus.AppendText("User: " + userName + " has joined" + Environment.NewLine);
+            {
+                InvokeControlAppendText(txtStatus, "User: " + userName + " has joined" + Environment.NewLine);
+            }
             else
             {
-                txtStatus.AppendText("User: " + userName + " already joined" + Environment.NewLine);
-
+                InvokeControlAppendText(txtStatus, "User: " + userName + " already joined" + Environment.NewLine);
             }
         }
  
@@ -85,9 +91,23 @@ namespace ChatClientApp
 
         public void UserLeave(string userName, Guid serverGuid, DateTime time)
         {
-            txtStatus.AppendText("User: " + userName + " has left: " + time.ToString() + Environment.NewLine);
+            InvokeControlAppendText(txtStatus , "User: " + userName + " has left: " + time.ToString() + Environment.NewLine);
         }
+        public void InvokeControlAppendText(Control control, string e)
+        {
 
+            if (control.InvokeRequired)
+            {
+                control.BeginInvoke((MethodInvoker)delegate ()
+                {
+                    control.Text += e;
+                });
+            }
+            else
+            {
+                control.Text += e;
+            }
+        }
         private async void button2_Click(object sender, EventArgs e)
         {
             try
@@ -95,7 +115,11 @@ namespace ChatClientApp
                 string userName = textBox1.Text;
                 await Task.Run(() =>
                 {
-                    m_client[1].Connect(userName, "freedesc", m_serverGuid[1], DateTime.Now, out string outMessage);
+                    if (m_client[1].Connect(userName, "freedesc", m_serverGuid[1], DateTime.Now, out string outMessage) == false)
+                    {
+                        m_client[1] = new ChatWCFClient(ipAddress, this);
+                        m_client[1].Connect(txtUserName.Text, "freedesc", m_serverGuid[1], DateTime.Now, out outMessage);
+                    }
                 });
             }
             catch (Exception err)
@@ -111,7 +135,11 @@ namespace ChatClientApp
                 string userName = textBox2.Text;
                 await Task.Run(() =>
                 {
-                    m_client[2].Connect(userName, "freedesc", m_serverGuid[2], DateTime.Now, out string outMessage);
+                    if (m_client[2].Connect(userName, "freedesc", m_serverGuid[2], DateTime.Now, out string outMessage) == false)
+                    {
+                        m_client[2] = new ChatWCFClient(ipAddress, this);
+                        m_client[2].Connect(txtUserName.Text, "freedesc", m_serverGuid[2], DateTime.Now, out outMessage);
+                    }
                 });
             }
             catch (Exception err)
@@ -182,7 +210,11 @@ namespace ChatClientApp
             {
                 await Task.Run(() =>
                 {
-                    m_client[3].Connect(textBox3.Text, "freedesc", m_serverGuid[3], DateTime.Now, out string outMessage);
+                    if (m_client[3].Connect(textBox3.Text, "freedesc", m_serverGuid[3], DateTime.Now, out string outMessage) == false)
+                    {
+                        m_client[3] = new ChatWCFClient(ipAddress, this);
+                        m_client[3].Connect(txtUserName.Text, "freedesc", m_serverGuid[3], DateTime.Now, out outMessage);
+                    }
                 });
             }
             catch (Exception err)
@@ -204,7 +236,12 @@ namespace ChatClientApp
             string msg = textBox4.Text;
             await Task.Run(() =>
             {
-                m_client[3].Broadcast(msg, out string outMessage);
+                if (m_client[3].Broadcast(msg, out string outMessage) == false)
+                {
+                    m_client[3] = new ChatWCFClient(ipAddress, this);
+                    m_client[3].Connect(txtUserName.Text, "freedesc", m_serverGuid[3], DateTime.Now, out outMessage);
+                    m_client[3].Broadcast(msg, out outMessage);
+                }
                
             });
             timer1.Enabled = true;
